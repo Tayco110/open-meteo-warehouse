@@ -8,12 +8,16 @@
 -- ============================================================
 
 INSERT INTO dim_variable (code, name, unit, category, description) VALUES
-    ('temperature_2m_max',      'Temperatura máxima',        '°C',    'temperature',   'Temperatura máxima diária a 2m do solo'),
-    ('temperature_2m_min',      'Temperatura mínima',        '°C',    'temperature',   'Temperatura mínima diária a 2m do solo'),
-    ('temperature_2m_mean',     'Temperatura média',         '°C',    'temperature',   'Temperatura média diária a 2m do solo'),
-    ('precipitation_sum',       'Precipitação total',        'mm',    'precipitation', 'Precipitação acumulada diária (chuva + neve)'),
-    ('windspeed_10m_max',       'Velocidade máx. do vento',  'km/h',  'wind',          'Velocidade máxima do vento a 10m'),
-    ('shortwave_radiation_sum', 'Radiação solar',            'MJ/m²', 'radiation',     'Radiação solar diária acumulada')
+    ('temperature_2m_max',        'Temperatura máxima',         '°C',    'temperature',   'Temperatura máxima diária a 2m do solo'),
+    ('temperature_2m_min',        'Temperatura mínima',         '°C',    'temperature',   'Temperatura mínima diária a 2m do solo'),
+    ('temperature_2m_mean',       'Temperatura média',          '°C',    'temperature',   'Temperatura média diária a 2m do solo'),
+    ('apparent_temperature_mean', 'Sensação térmica média',     '°C',    'temperature',   'Sensação térmica média diária (considera umidade e vento)'),
+    ('precipitation_sum',         'Precipitação total',         'mm',    'precipitation', 'Precipitação acumulada diária (chuva + neve)'),
+    ('rain_sum',                  'Chuva',                      'mm',    'precipitation', 'Chuva acumulada diária (exclui neve)'),
+    ('snowfall_sum',              'Neve',                       'cm',    'precipitation', 'Neve acumulada diária'),
+    ('windspeed_10m_max',         'Velocidade máx. do vento',   'km/h',  'wind',          'Velocidade máxima do vento a 10m do solo'),
+    ('shortwave_radiation_sum',   'Radiação solar',             'MJ/m²', 'radiation',     'Radiação solar diária acumulada'),
+    ('sunshine_duration',         'Duração de sol',             's',     'radiation',     'Duração diária de sol efetivo, em segundos')
 ON CONFLICT (code) DO NOTHING;
 
 INSERT INTO dim_date (date_id, date, year, quarter, month, month_name, day, day_of_week, day_name, is_weekend)

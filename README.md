@@ -85,8 +85,42 @@ EOF
 
 Esperado:
 - 4 tabelas: `dim_date`, `dim_location`, `dim_variable`, `fact_weather_daily`
-- `dim_variable` com 6 linhas
+- `dim_variable` com 10 linhas
 - `dim_date` com 5844 dias, de `2015-01-01` a `2030-12-31`
+
+### Ingestão (Python)
+
+```bash
+cd ingestion
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -v
+```
+
+Esperado: 3/3 testes passando.
+
+Smoke test contra a Open-Meteo (precisa do `.env` na raiz):
+
+```bash
+python -c "
+from datetime import date
+from src.client import OpenMeteoClient, load_locations
+from src.config import Settings
+from src.transform import to_long
+
+settings = Settings()
+locations = load_locations(settings.ingestion_locations_file)
+sp = next(l for l in locations if l.city == 'São Paulo')
+
+with OpenMeteoClient(settings.open_meteo_base_url) as client:
+    response = client.fetch_daily(sp, date(2024, 1, 1), date(2024, 1, 7))
+
+print(f'{len(to_long(sp, response))} medições coletadas')
+"
+```
+
+Esperado: `70 medições coletadas` (7 dias × 10 variáveis).
 
 ## Uso de IA
 
