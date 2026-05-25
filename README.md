@@ -122,6 +122,33 @@ print(f'{len(to_long(sp, response))} medições coletadas')
 
 Esperado: `70 medições coletadas` (7 dias × 10 variáveis).
 
+### Carga inicial via CLI
+
+Com o pacote instalado, o comando `openmeteo-ingest` fica disponível:
+
+```bash
+# Carga completa (5 anos × 10 cidades, ~3 min)
+openmeteo-ingest --since 2020-01-01 --until 2024-12-31
+
+# Janela arbitrária (subset de cidades)
+openmeteo-ingest --since 2024-01-01 --until 2024-01-31 --locations "São Paulo" Reykjavik
+```
+
+A ingestão é **idempotente**: rodar o mesmo intervalo duas vezes atualiza as linhas existentes em vez de duplicar.
+
+### Banco populado
+
+```bash
+psql "$DATABASE_URL" -c "
+SELECT
+  (SELECT COUNT(*) FROM dim_location)      AS localidades,
+  (SELECT COUNT(*) FROM dim_variable)      AS variaveis,
+  (SELECT COUNT(*) FROM fact_weather_daily) AS medicoes;
+"
+```
+
+Esperado após a carga completa: `10 localidades, 10 variáveis, 182700 medições`.
+
 ## Uso de IA
 
 Esta seção será preenchida ao final do projeto, documentando explicitamente onde a IA (Claude) foi utilizada e por quê.

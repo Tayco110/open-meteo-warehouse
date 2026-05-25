@@ -7,7 +7,7 @@ from pathlib import Path
 
 import httpx
 from pydantic import BaseModel, model_validator
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger(__name__)
 
@@ -84,8 +84,9 @@ class OpenMeteoClient:
         self._client = httpx.Client(timeout=timeout)
 
     @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(min=1, max=10),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=2, min=2, max=60),
+        retry=retry_if_exception_type(httpx.HTTPError),
         reraise=True,
     )
     def fetch_daily(
