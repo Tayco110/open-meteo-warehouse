@@ -1,0 +1,12 @@
+[
+  { "city": "São Paulo",      "country": "Brasil",    "latitude": -23.5505, "longitude":  -46.6333, "timezone": "America/Sao_Paulo" },
+  { "city": "Rio de Janeiro", "country": "Brasil",    "latitude": -22.9068, "longitude":  -43.1729, "timezone": "America/Sao_Paulo" },
+  { "city": "Buenos Aires",   "country": "Argentina", "latitude": -34.6037, "longitude":  -58.3816, "timezone": "America/Argentina/Buenos_Aires" },
+  { "city": "New York",       "country": "USA",       "latitude":  40.7128, "longitude":  -74.0060, "timezone": "America/New_York" },
+  { "city": "London",         "country": "UK",        "latitude":  51.5074, "longitude":   -0.1278, "timezone": "Europe/London" },
+  { "city": "Paris",          "country": "France",    "latitude":  48.8566, "longitude":    2.3522, "timezone": "Europe/Paris" },
+  { "city": "Tokyo",          "country": "Japan",     "latitude":  35.6762, "longitude":  139.6503, "timezone": "Asia/Tokyo" },
+  { "city": "Dubai",          "country": "UAE",       "latitude":  25.2048, "longitude":   55.2708, "timezone": "Asia/Dubai" },
+  { "city": "Sydney",         "country": "Australia", "latitude": -33.8688, "longitude":  151.2093, "timezone": "Australia/Sydney" },
+  { "city": "Reykjavik",      "country": "Iceland",   "latitude":  64.1466, "longitude":  -21.9426, "timezone": "Atlantic/Reykjavik" }
+]

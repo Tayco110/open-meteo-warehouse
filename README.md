@@ -53,6 +53,41 @@ cp .env.example .env
 
 Crie um projeto em [supabase.com](https://supabase.com), pegue a connection string em **Project Settings → Database → Connection string (Session pooler)** e cole em `DATABASE_URL` no `.env`.
 
+### 3. Aplicar o schema
+
+```bash
+set -a; source .env; set +a
+psql "$DATABASE_URL" -f db/001_schema.sql
+psql "$DATABASE_URL" -f db/002_seed_dimensions.sql
+psql "$DATABASE_URL" -f db/003_indexes.sql
+```
+
+## Validação
+
+### Conexão com o Supabase
+
+```bash
+set -a; source .env; set +a
+psql "$DATABASE_URL" -c "SELECT version();"
+```
+
+Esperado: retorna a versão do PostgreSQL do Supabase.
+
+### Schema e seeds aplicados
+
+```bash
+psql "$DATABASE_URL" <<'EOF'
+\dt
+SELECT COUNT(*) AS variaveis FROM dim_variable;
+SELECT COUNT(*) AS dias, MIN(date) AS de, MAX(date) AS ate FROM dim_date;
+EOF
+```
+
+Esperado:
+- 4 tabelas: `dim_date`, `dim_location`, `dim_variable`, `fact_weather_daily`
+- `dim_variable` com 6 linhas
+- `dim_date` com 5844 dias, de `2015-01-01` a `2030-12-31`
+
 ## Uso de IA
 
 Esta seção será preenchida ao final do projeto, documentando explicitamente onde a IA (Claude) foi utilizada e por quê.
