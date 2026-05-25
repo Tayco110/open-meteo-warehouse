@@ -149,6 +149,35 @@ SELECT
 
 Esperado após a carga completa: `10 localidades, 10 variáveis, 182700 medições`.
 
+### Backend (FastAPI)
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+pytest -v
+```
+
+Esperado: 6/6 testes passando.
+
+Subir a API:
+
+```bash
+openmeteo-api
+# servidor em http://localhost:8000
+# docs interativos em http://localhost:8000/docs
+```
+
+Smoke test dos endpoints:
+
+```bash
+curl -s http://localhost:8000/api/health
+curl -s "http://localhost:8000/api/stats?variables=temperature_2m_max&start_date=2024-01-01&end_date=2024-12-31"
+```
+
+Esperado: `{"status":"ok","database":"ok"}` no health e uma lista com min/max/avg de cada cidade no stats.
+
 ## Uso de IA
 
 Esta seção será preenchida ao final do projeto, documentando explicitamente onde a IA (Claude) foi utilizada e por quê.
