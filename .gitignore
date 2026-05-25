@@ -216,3 +216,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-specific
+.DS_Store
+.idea/
+.vscode/
+*.swp
+postgres_data/
+ingestion/data/
+*.duckdb
+
+# Node (caso usemos algum tooling no front)
+node_modules/
+dist/
+.parcel-cache/
