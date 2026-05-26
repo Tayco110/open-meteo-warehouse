@@ -243,4 +243,4 @@ Esta solução foi construída em par com **Claude** (Anthropic). A IA foi usada
 
 ### Por que usar IA
 
-A IA acelera o desenvolvimento em ordens de grandeza sem abrir mão de qualidade, desde que cada decisão arquitetural seja revisada e cada artefato validado antes de avançar. Aqui ela atuou como par técnico: propõe estruturas e código idiomático, justifica trade-offs e responde a correções com mudanças cirúrgicas. O resultado é um pipeline ponta-a-ponta que prioriza simplicidade e legibilidade ("arroz com feijão bem feito") em vez de exibicionismo técnico.
+A IA acelera o desenvolvimento em ordens de grandeza sem abrir mão de qualidade, desde que cada decisão arquitetural tomada seja revisada e cada artefato validado antes de avançar. Aqui ela atuou como par técnico: validando e propondo estruturas e código, e justificando trade-offs das escolhas. O resultado alcançado: Um pipeline ponta-a-ponta que prioriza o legível e o simples("arroz com feijão bem feito") no lugar de exibicionismo técnico e código inflado.
