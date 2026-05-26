@@ -1,7 +1,17 @@
 # open-meteo-warehouse
 
-Pipeline completo de dados meteorológicos: ingestão da [Open-Meteo](https://open-meteo.com), modelagem dimensional em PostgreSQL e dashboard web para comparar regiões e períodos.
+Pipeline completo de dados meteorológicos, da ingestão à visualização. Consome a [Open-Meteo](https://open-meteo.com), modela em PostgreSQL e expõe um dashboard web próprio para analisar e comparar dados climáticos entre diferentes regiões e períodos.
 
+A solução exercita o ciclo completo de engenharia e análise de dados: consumo de API pública, modelagem dimensional em banco relacional, pipeline ETL (coleta, transformação e carga), backend HTTP próprio e visualização conectada diretamente à fonte de dados, com aplicação de IA no desenvolvimento.
+
+## Diferenciais implementados
+
+- **Separação front/back**: ingestão, modelagem (SQL), backend (FastAPI) e frontend (estático) como módulos independentes, cada um com seu próprio `pyproject.toml` quando aplicável
+- **Tratamento de erros e logs**: handler global no FastAPI; healthcheck retorna 503 se o banco cair; ingestão com retry exponencial e pipeline tolerante a falha por cidade
+- **Configuração via `.env`** (`pydantic-settings`): mesmo arquivo da raiz para ingestão e backend, com validação tipada
+- **Camada de API própria** (FastAPI): 5 endpoints documentados via Swagger UI
+- **Scheduler diário** (modo `--daemon` da CLI): coleta automatizada com APScheduler
+- **CI** com GitHub Actions: lint (`ruff`) + 9 testes (3 unit na ingestão + 6 integration no backend com Postgres service)
 
 ## Arquitetura
 
