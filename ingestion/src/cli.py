@@ -3,6 +3,7 @@
 Exemplos:
     openmeteo-ingest --since 2024-01-01 --until 2024-01-31
     openmeteo-ingest --since 2020-01-01 --locations "São Paulo" Reykjavik
+    openmeteo-ingest --daemon  # roda como scheduler diário
 """
 
 import argparse
@@ -40,6 +41,14 @@ def _build_parser() -> argparse.ArgumentParser:
         "--locations", nargs="+",
         help="Cidades para coletar (case-insensitive). Default: todas em locations.json",
     )
+    parser.add_argument(
+        "--daemon", action="store_true",
+        help="Roda como scheduler diário em vez de execução única",
+    )
+    parser.add_argument(
+        "--no-startup-run", action="store_true",
+        help="Em modo --daemon, pula a coleta inicial (espera o cron)",
+    )
     return parser
 
 
@@ -51,6 +60,11 @@ def main(argv: list[str] | None = None) -> int:
         level=settings.log_level,
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
+
+    if args.daemon:
+        from .scheduler import start_scheduler
+        start_scheduler(settings, run_on_startup=not args.no_startup_run)
+        return 0  # alcançado apenas se o scheduler for interrompido
 
     since = args.since or settings.ingestion_start_date
     if since > args.until:

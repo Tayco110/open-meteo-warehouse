@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     ingestion_locations_file: Path = INGESTION_DIR / "locations.json"
     log_level: str = "INFO"
 
+    # Scheduler (modo --daemon)
+    scheduler_cron_hour: int = 3
+    scheduler_cron_minute: int = 0
+    scheduler_lookback_days: int = 7
+
     @field_validator("ingestion_locations_file", mode="after")
     @classmethod
     def _resolve_locations(cls, v: Path) -> Path:

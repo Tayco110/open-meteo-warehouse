@@ -136,6 +136,14 @@ openmeteo-ingest --since 2024-01-01 --until 2024-01-31 --locations "São Paulo" 
 
 A ingestão é **idempotente**: rodar o mesmo intervalo duas vezes atualiza as linhas existentes em vez de duplicar.
 
+### Modo daemon (scheduler diário)
+
+```bash
+openmeteo-ingest --daemon
+```
+
+Roda continuamente, coletando os últimos `SCHEDULER_LOOKBACK_DAYS` dias todos os dias às `SCHEDULER_CRON_HOUR:SCHEDULER_CRON_MINUTE` (defaults: 7 dias, 03:00).
+
 ### Banco populado
 
 ```bash
