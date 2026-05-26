@@ -5,7 +5,7 @@ import logging
 from collections.abc import Sequence
 from contextlib import asynccontextmanager
 from datetime import date
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 import uvicorn
 from fastapi import FastAPI, Query
@@ -27,6 +27,13 @@ from .schemas import (
 logger = logging.getLogger(__name__)
 
 Aggregation = Literal["daily", "monthly"]
+
+# Aliases para reduzir ruído nas assinaturas dos endpoints
+LocationsQ = Annotated[list[str] | None, Query()]
+VariablesQ = Annotated[list[str] | None, Query()]
+StartDateQ = Annotated[date | None, Query()]
+EndDateQ = Annotated[date | None, Query()]
+AggregationQ = Annotated[Aggregation, Query()]
 
 
 # ---------- helpers ----------
@@ -138,11 +145,11 @@ def create_app() -> FastAPI:
     @app.get("/api/weather", response_model=WeatherResponse, tags=["weather"])
     def get_weather(
         conn: DbDep,
-        locations: list[str] | None = Query(None),
-        variables: list[str] | None = Query(None),
-        start_date: date | None = Query(None),
-        end_date: date | None = Query(None),
-        aggregation: Aggregation = Query("daily"),
+        locations: LocationsQ = None,
+        variables: VariablesQ = None,
+        start_date: StartDateQ = None,
+        end_date: EndDateQ = None,
+        aggregation: AggregationQ = "daily",
     ) -> dict:
         where, params = _build_filters(locations, variables, start_date, end_date)
 
@@ -199,10 +206,10 @@ def create_app() -> FastAPI:
     @app.get("/api/stats", response_model=list[StatItem], tags=["weather"])
     def get_stats(
         conn: DbDep,
-        locations: list[str] | None = Query(None),
-        variables: list[str] | None = Query(None),
-        start_date: date | None = Query(None),
-        end_date: date | None = Query(None),
+        locations: LocationsQ = None,
+        variables: VariablesQ = None,
+        start_date: StartDateQ = None,
+        end_date: EndDateQ = None,
     ) -> list[dict]:
         where, params = _build_filters(locations, variables, start_date, end_date)
         sql = f"""

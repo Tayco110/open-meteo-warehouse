@@ -1,9 +1,8 @@
 """Persistência no PostgreSQL: upserts em dim_location e fact_weather_daily."""
 
 import logging
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
-from typing import Iterator
 
 import psycopg
 

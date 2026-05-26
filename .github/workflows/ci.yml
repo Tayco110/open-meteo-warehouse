@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check ingestion backend
+
+  test:
+    name: Tests (unit + integration)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: openmeteo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/openmeteo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install psql client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Apply database schema
+        run: |
+          psql "$DATABASE_URL" -f db/001_schema.sql
+          psql "$DATABASE_URL" -f db/002_seed_dimensions.sql
+          psql "$DATABASE_URL" -f db/003_indexes.sql
+
+      - name: Install ingestion package
+        working-directory: ingestion
+        run: pip install -e ".[dev]"
+
+      - name: Run ingestion unit tests
+        working-directory: ingestion
+        run: pytest -v
+
+      - name: Seed minimal data (SP, Jan-Mar/2024)
+        run: openmeteo-ingest --since 2024-01-01 --until 2024-03-31 --locations "São Paulo"
+
+      - name: Install backend package
+        working-directory: backend
+        run: pip install -e ".[dev]"
+
+      - name: Run backend integration tests
+        working-directory: backend
+        run: pytest -v
