@@ -26,6 +26,7 @@ class IngestionStats:
     locations: int
     measurements_collected: int
     measurements_upserted: int
+    failed_locations: list[str]
 
 
 def run_ingestion(
@@ -37,8 +38,8 @@ def run_ingestion(
     """Coleta da Open-Meteo e persiste no Postgres, cidade-a-cidade.
 
     Persistência incremental: cada cidade é coletada, transformada e gravada
-    antes da próxima. Em caso de falha no meio, as cidades anteriores já
-    estão salvas (o upsert garante que re-rodar não duplica).
+    antes da próxima. Falhas em uma cidade são logadas e a coleta continua
+    com as próximas; o upsert garante que re-rodar não duplica.
     """
     all_locations = load_locations(settings.ingestion_locations_file)
     if location_filter:
@@ -48,12 +49,13 @@ def run_ingestion(
             raise ValueError(f"Nenhuma localidade casa com {location_filter}")
 
     logger.info(
-        "Iniciando ingestão de %d localidade(s), %s → %s",
+        "Iniciando ingestão de %d localidade(s), %s a %s",
         len(all_locations), start_date, end_date,
     )
 
     total_collected = 0
     total_upserted = 0
+    failed: list[str] = []
 
     with (
         get_connection(settings.database_url) as conn,
@@ -65,17 +67,30 @@ def run_ingestion(
         variable_map = load_variable_map(conn)
 
         for i, loc in enumerate(all_locations):
-            response = client.fetch_daily(loc, start_date, end_date)
-            measurements = to_long(loc, response)
-            upserted = upsert_measurements(conn, measurements, location_map, variable_map)
-            total_collected += len(measurements)
-            total_upserted += upserted
+            try:
+                response = client.fetch_daily(loc, start_date, end_date)
+                measurements = to_long(loc, response)
+                upserted = upsert_measurements(
+                    conn, measurements, location_map, variable_map
+                )
+                total_collected += len(measurements)
+                total_upserted += upserted
+            except Exception:
+                label = f"{loc.city}, {loc.country}"
+                logger.exception("Falha ao coletar %s; continuando", label)
+                failed.append(label)
 
             if i < len(all_locations) - 1:
                 time.sleep(INTER_REQUEST_DELAY_SECONDS)
+
+    if failed:
+        logger.warning(
+            "Ingestão concluiu com %d falha(s): %s", len(failed), ", ".join(failed)
+        )
 
     return IngestionStats(
         locations=len(all_locations),
         measurements_collected=total_collected,
         measurements_upserted=total_upserted,
+        failed_locations=failed,
     )

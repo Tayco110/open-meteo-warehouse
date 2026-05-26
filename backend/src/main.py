@@ -8,8 +8,9 @@ from datetime import date
 from typing import Annotated, Any, Literal
 
 import uvicorn
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
@@ -106,14 +107,30 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Captura erros não-tratados: loga com traceback e responde JSON limpo.
+    @app.exception_handler(Exception)
+    async def _unhandled(request: Request, exc: Exception) -> JSONResponse:
+        logger.exception("Erro não tratado em %s %s", request.method, request.url.path)
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "Erro interno do servidor"},
+        )
+
     # ---------- endpoints ----------
 
     @app.get("/api/health", response_model=HealthResponse, tags=["health"])
-    def health(conn: DbDep) -> dict:
-        with conn.cursor() as cur:
-            cur.execute("SELECT 1")
-            cur.fetchone()
-        return {"status": "ok", "database": "ok"}
+    def health(conn: DbDep) -> JSONResponse:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                cur.fetchone()
+        except Exception:
+            logger.exception("Healthcheck falhou ao consultar o banco")
+            return JSONResponse(
+                status_code=503,
+                content={"status": "degraded", "database": "unreachable"},
+            )
+        return JSONResponse(content={"status": "ok", "database": "ok"})
 
     @app.get("/api/locations", response_model=list[LocationOut], tags=["catalog"])
     def list_locations(conn: DbDep) -> list[dict]:
@@ -188,9 +205,11 @@ def create_app() -> FastAPI:
             cur.execute(sql, params)
             rows = cur.fetchall()
 
+        def _series_key(r: dict) -> tuple[str, str]:
+            return (r["city"], r["variable"])
+
         series: list[WeatherSeries] = []
-        keyfn = lambda r: (r["city"], r["variable"])  # noqa: E731
-        for (_city, _var), group in itertools.groupby(rows, key=keyfn):
+        for (_city, _var), group in itertools.groupby(rows, key=_series_key):
             group_list = list(group)
             first = group_list[0]
             series.append({

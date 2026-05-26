@@ -42,7 +42,10 @@ def upsert_locations(
                 (loc.city, loc.country, loc.latitude, loc.longitude, loc.timezone),
             )
             row = cur.fetchone()
-            assert row is not None
+            if row is None:
+                raise RuntimeError(
+                    f"Upsert em dim_location não retornou id para {loc.city}, {loc.country}"
+                )
             mapping[(loc.city, loc.country)] = row[0]
     conn.commit()
     logger.info("Upserted %d localidades em dim_location", len(mapping))

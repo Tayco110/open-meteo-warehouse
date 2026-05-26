@@ -1,4 +1,3 @@
-// Base URL do backend FastAPI. Em produção, ajuste para a URL do Render.
 export const API_BASE = "http://localhost:8000/api";
 
 async function getJson(path, params = {}) {

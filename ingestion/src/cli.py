@@ -87,6 +87,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  localidades processadas : {stats.locations}")
     print(f"  medições coletadas      : {stats.measurements_collected}")
     print(f"  medições upserted       : {stats.measurements_upserted}")
+    if stats.failed_locations:
+        print(f"  falhas                  : {len(stats.failed_locations)}")
+        for label in stats.failed_locations:
+            print(f"    - {label}")
+        return 3
     return 0
 
 

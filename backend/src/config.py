@@ -1,4 +1,4 @@
-"""Configuração do backend — lê o mesmo `.env` da raiz do projeto."""
+"""Configuração do backend: lê o mesmo `.env` da raiz do projeto."""
 
 from pathlib import Path
 

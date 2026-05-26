@@ -1,5 +1,5 @@
 -- ============================================================
--- open-meteo-warehouse — schema dimensional
+-- open-meteo-warehouse: schema dimensional
 --
 -- Modelo: 1 fato (medições diárias) + 3 dimensões (localidade,
 -- data, variável). Fato em formato "narrow" (long), com uma

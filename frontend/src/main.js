@@ -72,9 +72,9 @@ async function loadAndRender() {
     const varName = variable?.name ?? filters.variables[0];
 
     document.getElementById("chart-title").textContent =
-      `${varName} — série temporal (${unit})`;
+      `${varName} (${unit}): série temporal`;
     document.getElementById("comparison-title").textContent =
-      `${varName} — média por cidade (${unit})`;
+      `${varName} (${unit}): média por cidade`;
 
     renderKpis(document.getElementById("kpis-grid"), stats, unit);
     renderLineChart(document.getElementById("line-chart"), weather, unit);

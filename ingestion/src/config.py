@@ -1,4 +1,4 @@
-"""Configuração da ingestão — lê variáveis do `.env` na raiz do projeto."""
+"""Configuração da ingestão: lê variáveis do `.env` na raiz do projeto."""
 
 from datetime import date
 from pathlib import Path

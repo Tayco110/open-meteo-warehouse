@@ -27,6 +27,7 @@ Pipeline completo de dados meteorológicos: ingestão da [Open-Meteo](https://op
 | Frontend   | HTML + JavaScript vanilla · Chart.js                    |
 | Testes/CI  | pytest · ruff · GitHub Actions                          |
 
+
 ### Modelagem dimensional
 
 Esquema *narrow* (long): uma linha do fato por (cidade × dia × variável). Permite acrescentar variáveis sem alterar o schema, e os filtros do dashboard ficam triviais.
@@ -73,7 +74,6 @@ open-meteo-warehouse/
 │   ├── style.css
 │   └── src/{api,filters,charts,kpis,main}.js
 ├── .github/workflows/ci.yml
-├── docker-compose.yml
 └── .env.example
 ```
 
