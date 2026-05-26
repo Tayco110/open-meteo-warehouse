@@ -5,7 +5,8 @@ import {
   renderLocationCheckboxes,
   renderVariableOptions,
 } from "./filters.js";
-import { renderLineChart } from "./charts.js";
+import { renderBarChart, renderLineChart } from "./charts.js";
+import { renderKpis } from "./kpis.js";
 
 const DEFAULT_CITIES = ["São Paulo", "New York", "Tokyo", "Reykjavik"];
 const DEFAULT_VARIABLE = "temperature_2m_mean";
@@ -55,23 +56,35 @@ async function loadAndRender() {
       return;
     }
 
-    const response = await api.getWeather(filters);
+    const statsParams = {
+      locations: filters.locations,
+      variables: filters.variables,
+      start_date: filters.start_date,
+      end_date: filters.end_date,
+    };
+    const [weather, stats] = await Promise.all([
+      api.getWeather(filters),
+      api.getStats(statsParams),
+    ]);
+
     const variable = state.variables.find((v) => v.code === filters.variables[0]);
     const unit = variable?.unit ?? "";
+    const varName = variable?.name ?? filters.variables[0];
 
     document.getElementById("chart-title").textContent =
-      `${variable?.name ?? filters.variables[0]} (${unit})`;
-    renderLineChart(
-      document.getElementById("line-chart"),
-      response,
-      unit,
-    );
+      `${varName} — série temporal (${unit})`;
+    document.getElementById("comparison-title").textContent =
+      `${varName} — média por cidade (${unit})`;
 
-    const totalPoints = response.series.reduce(
+    renderKpis(document.getElementById("kpis-grid"), stats, unit);
+    renderLineChart(document.getElementById("line-chart"), weather, unit);
+    renderBarChart(document.getElementById("bar-chart"), stats, unit);
+
+    const totalPoints = weather.series.reduce(
       (sum, s) => sum + s.data.length, 0,
     );
     status.textContent =
-      `${response.series.length} série(s), ${totalPoints} pontos`;
+      `${weather.series.length} série(s), ${totalPoints} pontos`;
   } catch (err) {
     showError(`Erro: ${err.message}`);
   } finally {

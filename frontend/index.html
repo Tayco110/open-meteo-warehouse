@@ -41,12 +41,24 @@
     <button id="apply-btn" type="button">Aplicar</button>
   </section>
 
+  <section id="kpis-card" class="card">
+    <h2>Indicadores do período</h2>
+    <div id="kpis-grid" class="kpis-grid"></div>
+  </section>
+
   <section id="chart-card" class="card">
     <h2 id="chart-title">Série temporal</h2>
     <div class="chart-container">
       <canvas id="line-chart"></canvas>
     </div>
     <p id="chart-status"></p>
+  </section>
+
+  <section id="comparison-card" class="card">
+    <h2 id="comparison-title">Comparativo entre cidades — média</h2>
+    <div class="chart-container">
+      <canvas id="bar-chart"></canvas>
+    </div>
   </section>
 
   <script type="module" src="src/main.js"></script>

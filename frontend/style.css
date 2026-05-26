@@ -125,10 +125,54 @@ header .subtitle {
   cursor: not-allowed;
 }
 
-#chart-card h2 {
+#chart-card h2,
+#comparison-card h2,
+#kpis-card h2 {
   margin: 0 0 1rem;
   font-size: 1.1rem;
   color: var(--text);
+}
+
+.kpis-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.1rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 4px solid var(--primary);
+}
+
+.kpi-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.kpi-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+  color: var(--text);
+}
+
+.kpi-detail {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.15rem;
+}
+
+@media (max-width: 900px) {
+  .kpis-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .chart-container {

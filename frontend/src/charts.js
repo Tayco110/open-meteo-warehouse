@@ -6,6 +6,7 @@ const COLORS = [
 ];
 
 let lineChart = null;
+let barChart = null;
 
 export function renderLineChart(canvas, weatherResponse, unit) {
   const datasets = weatherResponse.series.map((s, i) => ({
@@ -50,4 +51,48 @@ export function renderLineChart(canvas, weatherResponse, unit) {
 
   if (lineChart) lineChart.destroy();
   lineChart = new Chart(canvas, config);
+}
+
+export function renderBarChart(canvas, stats, unit) {
+  // Mantém a mesma cor por cidade que o line chart (ordem alfabética vinda do backend).
+  const colorByCity = {};
+  stats.forEach((s, i) => {
+    colorByCity[s.city] = COLORS[i % COLORS.length];
+  });
+
+  const sorted = [...stats].sort((a, b) => b.avg - a.avg);
+
+  const config = {
+    type: "bar",
+    data: {
+      labels: sorted.map((s) => s.city),
+      datasets: [
+        {
+          label: "Média",
+          data: sorted.map((s) => s.avg),
+          backgroundColor: sorted.map((s) => colorByCity[s.city]),
+          borderRadius: 4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: "x",
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.parsed.y?.toFixed(2)} ${unit}`,
+          },
+        },
+      },
+      scales: {
+        y: { title: { display: true, text: unit } },
+      },
+    },
+  };
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(canvas, config);
 }

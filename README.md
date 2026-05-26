@@ -187,7 +187,7 @@ cd frontend
 python3 -m http.server 5500
 ```
 
-Acesse `http://localhost:5500` — deve abrir o dashboard com filtros (cidades, variável, período, resolução) e gráfico de linha com a temperatura média mensal das cidades pré-selecionadas.
+Acesse `http://localhost:5500` — deve abrir o dashboard com filtros (cidades, variável, período, resolução), cards de KPI (mín/máx/média/medições), gráfico de linha (série temporal) e gráfico de barras (comparativo entre cidades).
 
 ## Uso de IA
 
