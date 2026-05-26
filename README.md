@@ -2,7 +2,6 @@
 
 Pipeline completo de dados meteorológicos: ingestão da [Open-Meteo](https://open-meteo.com), modelagem dimensional em PostgreSQL e dashboard web para comparar regiões e períodos.
 
-> Case técnico para vaga de Analista de Dados.
 
 ## Arquitetura
 
@@ -83,12 +82,14 @@ open-meteo-warehouse/
 
 - Python 3.11+
 - Cliente `psql` (PostgreSQL client)
+  - Ubuntu/Debian: `sudo apt install postgresql-client`
+  - macOS: `brew install libpq && brew link --force libpq`
 - Conta gratuita no [Supabase](https://supabase.com)
 
 ### 2. Clonar e configurar `.env`
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Tayco110/open-meteo-warehouse.git
 cd open-meteo-warehouse
 cp .env.example .env
 ```
@@ -97,11 +98,17 @@ cp .env.example .env
 
 1. Crie um projeto em [supabase.com](https://supabase.com) (defina e guarde a senha)
 2. **Project Settings → Database → Connection string → Session pooler** (porta `5432`, IPv4)
-3. Cole no `DATABASE_URL` do `.env`, **URL-encodando caracteres especiais da senha** (ex: `@` → `%40`)
+3. Cole no `DATABASE_URL` do `.env`, **URL-encodando caracteres especiais da senha** (ex: `@` → `%40`, `#` → `%23`)
 4. Use aspas simples em torno do valor:
 
 ```env
 DATABASE_URL='postgresql://postgres.<ref>:<senha-encoded>@aws-0-<region>.pooler.supabase.com:5432/postgres'
+```
+
+Helper para gerar a senha encoded:
+
+```bash
+python3 -c "from urllib.parse import quote; import getpass; print(quote(getpass.getpass('Senha: '), safe=''))"
 ```
 
 ### 4. Aplicar o schema
