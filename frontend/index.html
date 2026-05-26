@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>open-meteo-warehouse</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>open-meteo-warehouse</h1>
+    <p class="subtitle">Dashboard meteorológico — comparativo entre regiões e períodos</p>
+  </header>
+
+  <section id="filters" class="card">
+    <div class="filter-group">
+      <label>Cidades</label>
+      <div id="locations-list" class="checkbox-list"></div>
+    </div>
+    <div class="filter-group">
+      <label for="variable-select">Variável</label>
+      <select id="variable-select"></select>
+    </div>
+    <div class="filter-group">
+      <label for="start-date">De</label>
+      <input type="date" id="start-date">
+    </div>
+    <div class="filter-group">
+      <label for="end-date">Até</label>
+      <input type="date" id="end-date">
+    </div>
+    <div class="filter-group">
+      <label for="aggregation">Resolução</label>
+      <select id="aggregation">
+        <option value="daily">Diária</option>
+        <option value="monthly" selected>Mensal</option>
+      </select>
+    </div>
+    <button id="apply-btn" type="button">Aplicar</button>
+  </section>
+
+  <section id="chart-card" class="card">
+    <h2 id="chart-title">Série temporal</h2>
+    <div class="chart-container">
+      <canvas id="line-chart"></canvas>
+    </div>
+    <p id="chart-status"></p>
+  </section>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -178,6 +178,17 @@ curl -s "http://localhost:8000/api/stats?variables=temperature_2m_max&start_date
 
 Esperado: `{"status":"ok","database":"ok"}` no health e uma lista com min/max/avg de cada cidade no stats.
 
+### Frontend
+
+Com o backend rodando em outro terminal, sirva o frontend como estático:
+
+```bash
+cd frontend
+python3 -m http.server 5500
+```
+
+Acesse `http://localhost:5500` — deve abrir o dashboard com filtros (cidades, variável, período, resolução) e gráfico de linha com a temperatura média mensal das cidades pré-selecionadas.
+
 ## Uso de IA
 
 Esta seção será preenchida ao final do projeto, documentando explicitamente onde a IA (Claude) foi utilizada e por quê.
